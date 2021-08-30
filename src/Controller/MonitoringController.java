@@ -17,62 +17,123 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import monitoring.Monitoring;
+import javafx.scene.layout.Pane;
 
 /**
  *
- * @author Optimus 2020
+ * @author João Erick Barbosa
  */
 public class MonitoringController implements Initializable {
     
     @FXML
-    private Label label;
+    private Pane paneInfo;
+
+    @FXML
+    private Label lblSelectPatient;
+
+    @FXML
+    private Label txtUserName;
+
+    @FXML
+    private Label lblUserName;
+
+    @FXML
+    private Label txtRespiratoryFrequency;
+
+    @FXML
+    private Label lblRespiratoryFrequency;
+
+    @FXML
+    private Label txtTemperature;
+
+    @FXML
+    private Label lblTemperature;
+
+    @FXML
+    private Label txtBloodOxygen;
+
+    @FXML
+    private Label lblBloodOxygen;
+
+    @FXML
+    private Label txtHeartRate;
+
+    @FXML
+    private Label lblHeartRate;
+
+    @FXML
+    private Label txtBloodPressure;
+
+    @FXML
+    private Label lblBloodPressure;
     
     @FXML
-    private TableView<?> table;
+    private TableView<Patient> table;
 
     @FXML
-    private TableColumn<?, ?> clmID;
+    private TableColumn<Patient, String> clmID;
 
     @FXML
-    private TableColumn<?, ?> clmUserName;
+    private TableColumn<Patient, String> clmUserName;
     
     private static Socket client;
     
     private static List<Patient> patients = new ArrayList();
     
-    @FXML
-    private Label lbl;
+    private static List<Patient> patientsSeriousness = new ArrayList();
+    
+    private Patient selected;
+    private ObservableList<Patient> patientsTable = FXCollections.observableArrayList();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initClient();
         
+//        try {
+//            if(client != null){
+//                if(sendMessage()){
+//                    System.out.println("Mensagem enviada com sucesso!");
+//                } else{
+//                    System.out.println("Erro, falha ao enviar a mensagem!");
+//                }
+//            } else {
+//                System.out.println("Cliente não conectado!");
+//            }
+//            
+//
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        
         try {
-            if(client != null){
-                if(sendMessage()){
-                    System.out.println("Mensagem enviada com sucesso!");
-                    for (int i = 0; i < patients.size(); i++) {
-                        System.out.println("Paciente " + (i+1));
-                    }
-                } else{
-                    System.out.println("Erro, falha ao enviar a mensagem!");
-                }
-            } else {
-                System.out.println("Cliente não conectado!");
-            }
-            
-
+            initTable();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        System.out.println("Resposta do servidor: Existem " + patientsSeriousness.size() + " pacientes em estado grave!" );
+        
+        table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                selected = (Patient) newValue;
+                mostraDetalhes();
+            }
+        
+        });
             
         
 //        try {
@@ -93,21 +154,80 @@ public class MonitoringController implements Initializable {
         }
     }
     
-    //Envia os dados ao servidor a partir do que for digitado.
-    private static boolean sendMessage() throws ClassNotFoundException{
+//    //Envia os dados ao servidor a partir do que for digitado.
+//    private static boolean sendMessage() throws ClassNotFoundException{
+//        try {
+//            PrintStream data = new PrintStream(client.getOutputStream());
+//            data.println("GET");
+//            
+//            ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
+//            patients = (List<Patient>)entrada.readObject();
+//            System.out.println("Resposta do servidor: Existem " + patients.size() + " pacientes em estado grave!" );
+//            
+//            return true;
+//        } catch (IOException ex) {
+//            System.out.println("Erro ao enviar a mensagem!");
+//        }
+//        return false;
+//    }
+    
+    public void initTable() throws ClassNotFoundException{
+        clmID.setCellValueFactory(new PropertyValueFactory("id"));
+        clmUserName.setCellValueFactory(new PropertyValueFactory("userName"));
+        
+        if(client != null){
+            atualizaTabela();
+            table.setItems(getPatientsSeriousness());
+        } else{
+            System.out.println("A aplicação não conseguiu se conectar ao servidor!");
+        }
+    }
+    
+    public ObservableList<Patient> getPatientsSeriousness(){
+        for (int i = 0; i < patients.size(); i++) {
+            if(patients.get(i).isSeriousness()){
+                patientsSeriousness.add(patients.get(i));
+            }
+        }
+        
+        patientsTable = FXCollections.observableArrayList(patientsSeriousness);
+        return patientsTable;
+    }
+    
+    public List<Patient> atualizaTabela() throws ClassNotFoundException{
+        PrintStream data;
         try {
-            PrintStream data = new PrintStream(client.getOutputStream());
+            data = new PrintStream(client.getOutputStream());
             data.println("GET");
             
             ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
             patients = (List<Patient>)entrada.readObject();
-            System.out.println("Resposta do servidor: Existem " + patients.size() + " pacientes em estado grave!" );
             
-            
-            return true;
         } catch (IOException ex) {
-            System.out.println("Erro ao enviar a mensagem!");
+            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        
+        return patients;
+    }
+    
+    public void mostraDetalhes(){
+        if(selected != null){
+            paneInfo.setStyle("-fx-background-color: #eaeaea; -fx-border-color: #dfdfdf; -fx-border-radius: 8;");
+            lblSelectPatient.setVisible(false);
+            
+            txtUserName.setVisible(true);
+            txtRespiratoryFrequency.setVisible(true);
+            txtTemperature.setVisible(true);
+            txtBloodOxygen.setVisible(true);
+            txtHeartRate.setVisible(true);
+            txtBloodPressure.setVisible(true);
+            
+            lblUserName.setText(selected.getUserName());
+            lblRespiratoryFrequency.setText(selected.getRespiratoryFrequency() + " movimentos/min");
+            lblTemperature.setText(selected.getTemperature() + " ºC");
+            lblBloodOxygen.setText(selected.getBloodOxygen() + " %");
+            lblHeartRate.setText(selected.getHeartRate() + " batimentos/min");
+            lblBloodPressure.setText(selected.getBloodPressure() + " mmHg");
+        } 
     }
 }
