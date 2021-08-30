@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package monitoring;
+package Controller;
 
 import Model.Patient;
 import java.io.IOException;
@@ -24,12 +24,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import monitoring.Monitoring;
 
 /**
  *
  * @author Optimus 2020
  */
-public class FXMLDocumentController implements Initializable {
+public class MonitoringController implements Initializable {
     
     @FXML
     private Label label;
@@ -47,23 +48,30 @@ public class FXMLDocumentController implements Initializable {
     
     private static List<Patient> patients = new ArrayList();
     
+    @FXML
+    private Label lbl;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initClient();
         
         try {
-            if(sendMessage()){
-                System.out.println("Mensagem enviada com sucesso!");
-                for (int i = 0; i < patients.size(); i++) {
-                    System.out.println("Paciente " + (i+1));
+            if(client != null){
+                if(sendMessage()){
+                    System.out.println("Mensagem enviada com sucesso!");
+                    for (int i = 0; i < patients.size(); i++) {
+                        System.out.println("Paciente " + (i+1));
+                    }
+                } else{
+                    System.out.println("Erro, falha ao enviar a mensagem!");
                 }
-
-            } else{
-                System.out.println("Erro, falha ao enviar a mensagem!");
+            } else {
+                System.out.println("Cliente não conectado!");
             }
+            
 
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
         }
             
         
@@ -72,6 +80,7 @@ public class FXMLDocumentController implements Initializable {
 //        } catch (InterruptedException ex) {
 //            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
 //        }
+            
     }    
     
     //Inicializa a conexão cliente com o servidor 60000, o IP 127.0.0.2 indica que o servidor está na mesma máquina que o cliente.

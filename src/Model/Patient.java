@@ -49,7 +49,7 @@ public class Patient implements Serializable {
     public void verifySeriousness(){
         if(Integer.parseInt(this.respiratoryFrequency) >= 21 
                 || Integer.parseInt(this.heartRate) >= 111 
-                || Integer.parseInt(this.bloodPressure) <= 71 
+                || Integer.parseInt(this.bloodPressure) <= 100 
                 || Double.parseDouble(this.temperature) >= 38.6 
                 || Double.parseDouble(this.bloodOxygen) <= 96.0){
             
