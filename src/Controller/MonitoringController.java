@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.Patient;
+import Util.ThreadClient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
@@ -89,6 +90,9 @@ public class MonitoringController implements Initializable {
     @FXML
     private TableColumn<Patient, String> clmUserName;
     
+    @FXML
+    private TableColumn<Patient, String> clmSituation;
+    
     private static Socket client;
     
     private static List<Patient> patients = new ArrayList();
@@ -101,22 +105,6 @@ public class MonitoringController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initClient();
-        
-//        try {
-//            if(client != null){
-//                if(sendMessage()){
-//                    System.out.println("Mensagem enviada com sucesso!");
-//                } else{
-//                    System.out.println("Erro, falha ao enviar a mensagem!");
-//                }
-//            } else {
-//                System.out.println("Cliente não conectado!");
-//            }
-//            
-//
-//        } catch (ClassNotFoundException ex) {
-//            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         
         try {
             initTable();
@@ -154,29 +142,14 @@ public class MonitoringController implements Initializable {
         }
     }
     
-//    //Envia os dados ao servidor a partir do que for digitado.
-//    private static boolean sendMessage() throws ClassNotFoundException{
-//        try {
-//            PrintStream data = new PrintStream(client.getOutputStream());
-//            data.println("GET");
-//            
-//            ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
-//            patients = (List<Patient>)entrada.readObject();
-//            System.out.println("Resposta do servidor: Existem " + patients.size() + " pacientes em estado grave!" );
-//            
-//            return true;
-//        } catch (IOException ex) {
-//            System.out.println("Erro ao enviar a mensagem!");
-//        }
-//        return false;
-//    }
-    
     public void initTable() throws ClassNotFoundException{
         clmID.setCellValueFactory(new PropertyValueFactory("id"));
         clmUserName.setCellValueFactory(new PropertyValueFactory("userName"));
+        clmSituation.setCellValueFactory(new PropertyValueFactory("situation"));
         
         if(client != null){
             atualizaTabela();
+//            new ThreadClient(client).atualizaTabela();
             table.setItems(getPatientsSeriousness());
         } else{
             System.out.println("A aplicação não conseguiu se conectar ao servidor!");
@@ -189,6 +162,11 @@ public class MonitoringController implements Initializable {
                 patientsSeriousness.add(patients.get(i));
             }
         }
+        for (int i = 0; i < patients.size(); i++) {
+            if(!patients.get(i).isSeriousness()){
+                patientsSeriousness.add(patients.get(i));
+            }
+        }
         
         patientsTable = FXCollections.observableArrayList(patientsSeriousness);
         return patientsTable;
@@ -198,7 +176,7 @@ public class MonitoringController implements Initializable {
         PrintStream data;
         try {
             data = new PrintStream(client.getOutputStream());
-            data.println("GET");
+            data.println("GET /list");
             
             ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
             patients = (List<Patient>)entrada.readObject();
@@ -230,4 +208,10 @@ public class MonitoringController implements Initializable {
             lblBloodPressure.setText(selected.getBloodPressure() + " mmHg");
         } 
     }
+
+    public static void setPatients(List<Patient> patients) {
+        MonitoringController.patients = patients;
+    }
+    
+    
 }

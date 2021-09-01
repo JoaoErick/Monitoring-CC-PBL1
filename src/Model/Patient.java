@@ -18,6 +18,7 @@ public class Patient implements Serializable {
     private String bloodOxygen;
     private String heartRate;
     private String bloodPressure;
+    private String situation = "Não grave";
     private boolean seriousness = false;
     
     /**
@@ -54,6 +55,7 @@ public class Patient implements Serializable {
                 || Double.parseDouble(this.bloodOxygen) <= 96.0){
             
             this.seriousness = true;
+            this.situation = "Grave";
         }
     }
 
@@ -171,6 +173,17 @@ public class Patient implements Serializable {
     public boolean isSeriousness() {
         return seriousness;
     }
+
+    /**
+     * Método que retorna se o paciente está grave ou não para exibição na lista.
+     * 
+     * @return boolean
+     */
+    public String getSituation() {
+        return situation;
+    }
+    
+    
     
     
     

@@ -88,10 +88,11 @@
       <TableView fx:id="table" layoutX="418.0" layoutY="136.0" prefHeight="454.0" prefWidth="471.0" style="-fx-background-radius: 8;">
          <columns>
             <TableColumn fx:id="clmID" prefWidth="84.0" style="-fx-font-size: 14; -fx-alignment: CENTER; -fx-border-color: transparent #d3d3d3 transparent #d3d3d3;" text="ID" />
-            <TableColumn fx:id="clmUserName" prefWidth="385.0" style="-fx-font-size: 14; -fx-alignment: CENTER; -fx-border-color: transparent #d3d3d3 transparent #d3d3d3;" text="Nome Completo" />
+            <TableColumn fx:id="clmUserName" prefWidth="300.0" style="-fx-font-size: 14; -fx-alignment: CENTER; -fx-border-color: transparent #d3d3d3 transparent #d3d3d3;" text="Nome Completo" />
+            <TableColumn fx:id="clmSituation" prefWidth="84.0" style="-fx-font-size: 14; -fx-alignment: CENTER; -fx-border-color: transparent #d3d3d3 transparent #d3d3d3;" text="Situação" />
          </columns>
       </TableView>
-      <Label layoutX="701.0" layoutY="105.0" text="PACIENTES GRAVES" textFill="#656565">
+      <Label layoutX="786.0" layoutY="105.0" text="PACIENTES" textFill="#656565">
          <font>
             <Font name="Rockwell Bold" size="20.0" />
          </font>
