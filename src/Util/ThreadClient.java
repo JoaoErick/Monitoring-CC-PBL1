@@ -111,7 +111,7 @@ public class ThreadClient extends Thread {
 
                 ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
                 patients = (List<Patient>)entrada.readObject();
-                MonitoringController.setPatients(patients);
+//                MonitoringController.setPatients(patients);
                 System.out.println(patients.size());
 
             } catch (IOException ex) {
