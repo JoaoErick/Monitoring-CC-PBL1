@@ -257,8 +257,11 @@ public class MonitoringController implements Initializable {
             data = new PrintStream(client.getOutputStream());
             data.println("GET /list");
             
-            ObjectInputStream entrada = new ObjectInputStream(client.getInputStream());
-            patients = (List<Patient>)entrada.readObject();
+            ObjectInputStream input = new ObjectInputStream(client.getInputStream());
+            patients = (List<Patient>)input.readObject();
+            
+            String text = (String)input.readObject();
+            System.out.println("Resposta do servidor: " + text);
             
         } catch (IOException ex) {
             Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
