@@ -6,7 +6,6 @@
 package Controller;
 
 import Model.Patient;
-import Util.ThreadClient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -172,21 +172,45 @@ public class MonitoringController implements Initializable {
         });
             
         /**
-         * Sempre que o mouse entrar na região de mais informações do paciente, 
-         * uma nova lista de pacientes é requisitada ao servidor 
-         * e a tabela é atualizada. 
+         * Uma nova thread é inicializada concorrentemente ao sistema para fazer
+         * requisições ao servidor. A cada 5 segundos, uma nova lista de 
+         * pacientes é requisitada e a tabela é atualizada. 
+         * 
          */
-        paneInfo.setOnMouseEntered((MouseEvent e)->{
-            orderedPatients = new ArrayList();
-            try {
-                refreshTable();
-                showRefreshDetails();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                Runnable updater = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        orderedPatients = new ArrayList();
+                        try {
+                            refreshTable();
+                            showRefreshDetails();
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        table.setItems(getOrderedPatients());
+                    }
+                };
+
+                while (true) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                    }
+
+                    // A atualização é feita na thread da aplicação.
+                    Platform.runLater(updater);
+                }
             }
-            table.setItems(getOrderedPatients());
+
         });
-            
+        // Impede a thread de finalizar a JVM
+        thread.setDaemon(true);
+        thread.start();
     }    
     
     /**
