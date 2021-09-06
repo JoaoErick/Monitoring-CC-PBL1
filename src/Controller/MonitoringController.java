@@ -198,7 +198,7 @@ public class MonitoringController implements Initializable {
 
                 while (true) {
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(3000);
                     } catch (InterruptedException ex) {
                     }
 
