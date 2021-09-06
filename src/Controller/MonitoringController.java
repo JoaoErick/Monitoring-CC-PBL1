@@ -12,6 +12,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -264,6 +265,7 @@ public class MonitoringController implements Initializable {
             }
         }
         
+        Collections.sort(orderedPatients);
         patientsTable = FXCollections.observableArrayList(orderedPatients);
         return patientsTable;
     }
