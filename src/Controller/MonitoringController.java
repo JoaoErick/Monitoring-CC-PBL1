@@ -158,8 +158,6 @@ public class MonitoringController implements Initializable {
             Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        System.out.println("Resposta do servidor: Existem " + orderedPatients.size() + " pacientes em estado grave!" );
-        
         //Armazena um paciente caso algum item da tabela de pacientes seja selecionado.
         table.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
@@ -186,14 +184,18 @@ public class MonitoringController implements Initializable {
 
                     @Override
                     public void run() {
-                        orderedPatients = new ArrayList();
-                        try {
-                            refreshTable();
-                            showRefreshDetails();
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+                        if(client != null){
+                            orderedPatients = new ArrayList();
+                            try {
+                                refreshTable();
+                                showRefreshDetails();
+                            } catch (ClassNotFoundException ex) {
+                                Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            table.setItems(getOrderedPatients());
+                        } else{
+                            initClient();
                         }
-                        table.setItems(getOrderedPatients());
                     }
                 };
 
@@ -224,6 +226,10 @@ public class MonitoringController implements Initializable {
             System.out.println("Conexão estabelecida!");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");
+            try {
+                client.close();
+            }
+            catch(Exception ec) {}
         }
     }
     
