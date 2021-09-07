@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package monitoring;
 
 import javafx.application.Application;
@@ -13,8 +9,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- *
- * @author Optimus 2020
+ * Classe responsável por instanciar a janela da aplicação.
+ * @author João Erick Barbosa
  */
 public class Monitoring extends Application {
     
@@ -22,7 +18,7 @@ public class Monitoring extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/View/Monitoring.fxml"));
         
         Scene scene = new Scene(root);
         
@@ -38,16 +34,25 @@ public class Monitoring extends Application {
     }
 
     /**
-     * @param args the command line arguments
+     * Resgata argumentos passados por linha de comando.
+     * @param args 
      */
     public static void main(String[] args) {
         launch(args);
     }
     
+    /**
+     * Retorna o objeto da janela instanciada.
+     * @return Stage
+     */
     public static Stage getStage() {
         return stage;
     }
 
+    /**
+     * Altera o objeto da janela instanciada.
+     * @return Stage
+     */
     public static void setStage(Stage stage) {
         Monitoring.stage = stage;
     }
