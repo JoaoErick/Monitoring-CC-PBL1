@@ -222,7 +222,7 @@ public class MonitoringController implements Initializable {
      */
     private static void initClient(){
         try {
-            client = new Socket("127.0.0.2", 60000);
+            client = new Socket("2.tcp.ngrok.io", 14700);
             System.out.println("Conexão estabelecida!");
         } catch (IOException ex) {
             System.out.println("Erro, a conexão com o servidor não foi estabelecida!");

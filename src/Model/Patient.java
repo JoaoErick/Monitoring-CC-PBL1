@@ -102,6 +102,14 @@ public class Patient implements Serializable, Comparable<Patient> {
     public String getUserName() {
         return userName;
     }
+    
+    /**
+     * Método que altera o nome do paciente.
+     * 
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     /**
      * Método que retorna o valor da frequência respiratória do paciente.
