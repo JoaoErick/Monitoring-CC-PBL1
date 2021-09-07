@@ -55,6 +55,10 @@ public class Patient implements Serializable, Comparable<Patient> {
             this.seriousness = true;
             this.situation = "Grave";
             calculateScoreSeriousness();
+        } else{
+            this.seriousness = false;
+            this.situation = "Não grave";
+            this.scoreSeriousness = 0.0;
         }
     }
     
@@ -67,13 +71,13 @@ public class Patient implements Serializable, Comparable<Patient> {
             score += (double) (Integer.parseInt(this.heartRate)) * 1;
         }
         if(Integer.parseInt(this.bloodPressure) <= 100 ){
-            score += (double) (1/Integer.parseInt(this.bloodPressure)) * 1;
+            score += (double) (100 - Integer.parseInt(this.bloodPressure)) * 1;
         }
         if(Double.parseDouble(this.temperature) >= 38.6 ){
             score += (double) (Double.parseDouble(this.temperature)) * 1;
         }
         if(Double.parseDouble(this.bloodOxygen) <= 96.0){
-            score += (double) (1/Double.parseDouble(this.bloodOxygen)) * 2;
+            score += (double) (100 - Double.parseDouble(this.bloodOxygen)) * 2;
         }
         this.scoreSeriousness = (double) score/6;
     }
