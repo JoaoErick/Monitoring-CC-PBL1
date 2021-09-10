@@ -9,7 +9,6 @@ import Model.Patient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,15 +22,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 /**
@@ -202,7 +198,7 @@ public class MonitoringController implements Initializable {
 
                 while (true) {
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(8000);
                     } catch (InterruptedException ex) {
                     }
 
