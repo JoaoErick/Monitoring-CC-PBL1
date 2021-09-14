@@ -121,9 +121,15 @@ public class MonitoringController implements Initializable {
     private TableColumn<Patient, String> clmSituation;
     
     /**
+     * Componente que indica o status da conexão do cliente com o servidor.
+     */
+    @FXML
+    private Label lblStatus;
+    
+    /**
      * Cliente Socket que fará conexão com o servidor.
      */
-    private static Socket client;
+    private static Socket client = null;
     
     /**
      * Armazena a lista de pacientes resgata do servidor.
@@ -148,6 +154,8 @@ public class MonitoringController implements Initializable {
         //Faz a conexão do cliente com o servidor.
         initClient();
         
+        lblStatus.setText("aguardando...");
+        
         //Inicializa a tabela de pacientes.
         try {
             initTable();
@@ -169,7 +177,7 @@ public class MonitoringController implements Initializable {
             
         /**
          * Uma nova thread é inicializada concorrentemente ao sistema para fazer
-         * requisições ao servidor. A cada 5 segundos, uma nova lista de 
+         * requisições ao servidor. A cada 8 segundos, uma nova lista de 
          * pacientes é requisitada e a tabela é atualizada. 
          * 
          */
@@ -182,6 +190,9 @@ public class MonitoringController implements Initializable {
                     @Override
                     public void run() {
                         if(client != null){
+                            lblStatus.setText("Conectado");
+                            lblStatus.setStyle("-fx-text-fill: green");
+                            
                             orderedPatients = new ArrayList();
                             try {
                                 refreshTable();
@@ -191,6 +202,8 @@ public class MonitoringController implements Initializable {
                             }
                             table.setItems(getOrderedPatients());
                         } else{
+                            lblStatus.setText("Sem conexão");
+                            lblStatus.setStyle("-fx-text-fill: red");
                             initClient();
                         }
                     }
@@ -294,6 +307,9 @@ public class MonitoringController implements Initializable {
             
         } catch (IOException ex) {
             Logger.getLogger(MonitoringController.class.getName()).log(Level.SEVERE, null, ex);
+            lblStatus.setText("Sem conexão");
+            lblStatus.setStyle("-fx-text-fill: red");
+            client = null;
         }
     }
     

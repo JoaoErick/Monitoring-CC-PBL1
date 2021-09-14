@@ -107,5 +107,15 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <Label layoutX="737.0" layoutY="29.0" text="Status:" textFill="#656565">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="lblStatus" layoutX="789.0" layoutY="29.0" prefHeight="25.0" prefWidth="99.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
