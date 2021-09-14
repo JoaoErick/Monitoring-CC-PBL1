@@ -129,7 +129,7 @@ public class MonitoringController implements Initializable {
     /**
      * Cliente Socket que fará conexão com o servidor.
      */
-    private static Socket client = null;
+    private static Socket client;
     
     /**
      * Armazena a lista de pacientes resgata do servidor.
