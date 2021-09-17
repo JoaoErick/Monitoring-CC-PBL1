@@ -8,7 +8,7 @@
 ------------
 
 ## 📚 Descrição ##
-Aplicação desktop destinada a resolução do Problema 1 da disciplina MI - Concorrência e Conectividade. Sistema de monitoramento capaz de realizar o acompanhamento do estado dos pacientes com COVID-19 ou com suspeita do vírus em tempo real. 
+Aplicação desktop destinada a resolução do Problema 1 da disciplina MI - Concorrência e Conectividade. Sistema de monitoramento capaz de realizar o acompanhamento do estado dos pacientes com COVID-19 em tempo real. 
 
 **🔗 Tecnologias utilizadas:**
 - [Java](https://www.java.com/pt-BR/)
